@@ -2,30 +2,34 @@
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>OpenClaw — Control UI</title>
 <style>
-:root{--bg:#0b1220;--panel:#111c2e;--panel2:#16233a;--line:#233450;--text:#e6edf7;--muted:#93a4bd;--accent:#3b82f6;--green:#22c55e;--amber:#f59e0b}
-*{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:0;background:var(--bg);color:var(--text)}
-.top{height:52px;display:flex;align-items:center;gap:12px;padding:0 18px;background:#0a0f1c;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-.top b{font-size:16px} .pill{font-size:12px;padding:4px 10px;border-radius:999px;background:#12233d;border:1px solid var(--line);color:var(--muted)}
-.pill .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px}
-.layout{display:flex;min-height:calc(100vh - 52px)}
-aside{width:230px;background:#0a0f1c;border-right:1px solid var(--line);padding:16px 12px;flex-shrink:0}
-aside .sec{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 8px 6px}
-aside button{display:flex;width:100%;text-align:left;background:none;border:0;color:#cbd5e1;padding:9px 10px;border-radius:8px;font-size:15px;cursor:pointer}
-aside button:hover{background:var(--panel)} aside button.active{background:var(--panel2);color:#fff}
-aside button span{margin-left:auto;font-size:12px;color:var(--muted)}
-main{flex:1;padding:22px;max-width:960px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+*{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#f3f5fa;color:#0f172a}
+.top{height:60px;display:flex;align-items:center;gap:12px;padding:0 20px;background:#fff;border-bottom:1px solid #e5e9f2;position:sticky;top:0;z-index:5}
+.top b{font-size:17px} .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:18px}
+.pill{font-size:13px;padding:6px 12px;border-radius:999px;background:#eef2ff;border:1px solid #e0e7ff;color:#3730a3}
+.pill .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px}
+.layout{display:flex;min-height:calc(100vh - 60px)}
+aside{width:240px;background:#fff;border-right:1px solid #e5e9f2;padding:18px 12px;flex-shrink:0}
+aside .sec{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin:18px 10px 8px}
+aside button{display:flex;width:100%;text-align:left;background:none;border:0;color:#334155;padding:11px 12px;border-radius:12px;font-size:15px;cursor:pointer}
+aside button:hover{background:#f1f5f9} aside button.active{background:linear-gradient(135deg,#eff6ff,#f5f3ff);color:#1d4ed8;font-weight:600}
+aside button span{margin-left:auto;font-size:12px;color:#94a3b8}
+main{flex:1;padding:26px;max-width:980px}
+.hero{background:linear-gradient(135deg,#2563eb,#7c3aed,#db2777);color:#fff;border-radius:20px;padding:22px;margin:6px 0 16px;box-shadow:0 12px 30px rgba(37,99,235,.25)}
+.hero h2{margin:0 0 6px;font-size:24px} .hero p{margin:0;opacity:.9}
+.card{background:#fff;border:1px solid #e5e9f2;border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
 .grid .card{margin:0}
-.muted{color:var(--muted);font-size:14px} .ok{color:var(--green)} .warn{color:var(--amber)}
-input,select,textarea{width:100%;padding:10px;font-size:15px;border-radius:8px;border:1px solid var(--line);background:#0b1220;color:var(--text);margin:6px 0}
-button.primary{background:var(--accent);border:1px solid var(--accent);color:#fff;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:15px}
-button.ghost{background:none;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer}
-.hidden{display:none} a{color:#60a5fa} code{background:#0a0f1c;padding:2px 6px;border-radius:6px}
-#log,#chatlog{white-space:pre-wrap;background:#0a0f1c;border-radius:8px;padding:12px;min-height:120px;font-size:14px}
-.agent{border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.muted{color:#64748b;font-size:14px} .ok{color:#16a34a;font-weight:600} .warn{color:#d97706;font-weight:600}
+input,select,textarea{width:100%;padding:11px;font-size:15px;border-radius:12px;border:1px solid #dbe2ef;background:#fff;color:#0f172a;margin:6px 0}
+input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe;border-color:#2563eb}
+button.primary{background:#2563eb;border:1px solid #2563eb;color:#fff;padding:11px 16px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:600}
+button.primary:hover{background:#1d4ed8} button.ghost{background:#fff;border:1px solid #dbe2ef;color:#0f172a;padding:9px 13px;border-radius:12px;cursor:pointer}
+.hidden{display:none} a{color:#2563eb} code{background:#f1f5f9;padding:2px 7px;border-radius:7px}
+#log,#chatlog{white-space:pre-wrap;background:#f8fafc;border:1px solid #e5e9f2;border-radius:12px;padding:14px;min-height:120px;font-size:14px}
+.agent{border:1px solid #e5e9f2;border-radius:14px;padding:14px;margin:10px 0;display:flex;gap:12px;align-items:center;justify-content:space-between;background:#fff}
+.avatar{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
 </style></head><body>
-<div class="top"><b>🦞 OpenClaw</b><span class="pill"><span class="dot"></span><span id="gwTop">Gateway Online · serverless</span></span><span class="pill" id="agentTop">Agent: Main</span><span class="pill" id="keyTop">Key: not set</span><span style="margin-left:auto" class="muted">Vercel Hobby · $0 · <a href="https://github.com/SadmanJarif/openclaw-vercel">GitHub</a></span></div>
+<div class="top"><div class="logo">🦞</div><b>OpenClaw</b><span class="pill"><span class="dot"></span><span id="gwTop">Gateway Online · serverless</span></span><span class="pill" id="agentTop">Agent: Main</span><span class="pill" id="keyTop">Key: not set</span><span style="margin-left:auto" class="muted">Vercel Hobby · $0 · <a href="https://github.com/SadmanJarif/openclaw-vercel">GitHub</a></span></div>
 <div class="layout">
 <aside>
 <div class="sec">Control UI</div>
@@ -33,7 +37,6 @@ button.ghost{background:none;border:1px solid var(--line);color:var(--text);padd
 <button onclick="show('agents',this)">🤖 Agents <span id="agentCount"></span></button>
 <button onclick="show('webchat',this)">💬 WebChat</button>
 <button onclick="show('sessions',this)">🗂️ Sessions</button>
-<button onclick="show('channels',this)">📱 Channels</button>
 <button onclick="show('activity',this)">⚡ Activity</button>
 <div class="sec">Settings</div>
 <button onclick="show('settings',this)">⚙️ Settings · API key</button>
@@ -41,21 +44,20 @@ button.ghost{background:none;border:1px solid var(--line);color:var(--text);padd
 </aside>
 <main>
 <section id="dashboard">
-<h2 style="margin:4px 0">Dashboard</h2><p class="muted">Like the real Control UI — gateway status, agents, channels and activity in one place.</p>
+<div class="hero"><h2>Welcome back, Jarif 👋</h2><p>Your OpenClaw Control UI — agents, chat and settings, all in light mode.</p></div>
 <div class="grid">
-<div class="card"><b>Gateway</b><br><span id="gw" class="ok">● Online (serverless)</span><br><span class="muted">Vercel functions · 10s timeout · stateless</span></div>
+<div class="card"><b>Gateway</b><br><span id="gw" class="ok">● Online (serverless)</span><br><span class="muted">Vercel functions · 10s timeout</span></div>
 <div class="card"><b>Model</b><br><span id="modelLabel">openrouter/free</span><br><span class="muted">OpenRouter :free · $0/token · 20/min · 50/day</span></div>
 <div class="card"><b>API key</b><br><span id="keyLabel" class="warn">Not set</span><br><span class="muted">Set it in Settings — saved in this browser only</span></div>
-<div class="card"><b>Agents</b><br><span id="agentStat">1</span><br><span class="muted">Create one in Agents — each has its own instructions</span></div>
+<div class="card"><b>Agents</b><br><span id="agentStat">1</span><br><span class="muted">Create one in Agents</span></div>
 </div>
-<div class="card"><b>Active agent</b> — <span id="activeAgentLabel">Main</span><br><span class="muted" id="activeAgentDesc">Your helpful personal assistant.</span><br><br><button class="primary" onclick="go('webchat')">Open chat →</button> <button class="ghost" onclick="go('agents')">Manage agents</button> <button class="ghost" onclick="go('channels')">Connect WhatsApp</button></div>
-<div class="card"><b>Channels</b><br>WebChat: <span class="ok">● Connected</span> &nbsp;·&nbsp; WhatsApp: <span class="warn">Not linked — needs local gateway QR</span> &nbsp;·&nbsp; Telegram: <span class="muted">Not set</span><br><span class="muted">See Channels for the WhatsApp steps.</span></div>
+<div class="card"><b>Active agent</b> — <span id="activeAgentLabel">Main</span><br><span class="muted" id="activeAgentDesc">Your helpful personal assistant.</span><br><br><button class="primary" onclick="go('webchat')">Open chat →</button> <button class="ghost" onclick="go('agents')">Manage agents</button> <button class="ghost" onclick="go('settings')">Set API key</button></div>
 </section>
 
 <section id="agents" class="hidden">
-<h2>Agents</h2><p class="muted">An agent is one persona: its own instructions, model and chats. Like the real UI at <code>/agents</code>, with Manage agents in Settings.</p>
+<h2>Agents</h2><p class="muted">An agent is one persona: its own instructions, model and chats. Create as many as you want — they save in this browser.</p>
 <div id="agentList"></div>
-<div class="card"><b>Create a new agent</b>
+<div class="card"><b>✨ Create a new agent</b>
 <input id="newName" placeholder="Agent name — e.g. Sales Helper, Study Coach">
 <input id="newRole" placeholder="Role — e.g. Helps with sales outreach">
 <textarea id="newInstr" rows="3" placeholder="Instructions — what should this agent do? Be specific."></textarea>
@@ -65,23 +67,14 @@ button.ghost{background:none;border:1px solid var(--line);color:var(--text);padd
 
 <section id="webchat" class="hidden">
 <h2>WebChat — <span id="chatAgent">Main</span></h2>
-<div class="card"><div id="chatlog">Ask your active agent something below. It uses that agent's instructions and model.</div><br>
+<div class="card"><div id="chatlog">Ask your active agent something below.</div><br>
 <input id="q" placeholder="Message your agent..." style="width:68%"><button class="primary" onclick="ask()">Send</button></div>
 </section>
 
 <section id="sessions" class="hidden">
 <h2>Sessions</h2>
-<div class="card"><b>webchat — current browser session</b><br><span class="muted">Vercel is stateless, so sessions don't persist on the server. On a local gateway they live in <code>~/.openclaw/</code> with full history. Here, your chats and agents are saved in this browser (localStorage).</span></div>
+<div class="card"><b>webchat — current browser session</b><br><span class="muted">Vercel is stateless, so sessions don't persist on the server. Your chats and agents are saved in this browser.</span></div>
 <div class="card" id="sessionList">No messages yet in this session.</div>
-</section>
-
-<section id="channels" class="hidden">
-<h2>Channels</h2>
-<div class="card"><b>💬 WebChat</b> — <span class="ok">● Connected</span><br><span class="muted">Built into this Control UI. Works now, once your API key is set.</span></div>
-<div class="card"><b>📱 WhatsApp</b> — <span class="warn">Not linked on Vercel</span><br><span class="muted">Real OpenClaw links WhatsApp with a QR code: <code>openclaw channels login --channel whatsapp</code>, then on your phone WhatsApp → Settings → Linked Devices → Link a Device and scan it. WhatsApp uses Baileys (WhatsApp Web), not the official API, and it needs the long-running Gateway — Vercel serverless can't hold that QR session, so the full link has to happen on a local gateway / VPS. Save your number below and it will be kept for that setup.</span><br><br>
-<input id="waNumber" placeholder="+8801XXXXXXXXX — your WhatsApp number"><button class="primary" onclick="saveWA()">Save WhatsApp number</button> <span id="waSaved" class="muted"></span><br><br>
-<span class="muted">Tip: use a second / assistant number if you can — linking your personal WhatsApp makes every message to you become agent input.</span></div>
-<div class="card"><b>✈️ Telegram</b> — <span class="muted">Not set</span><br><span class="muted">Needs only a bot token from @BotFather. Save it here and it stays in this browser.</span><br><input id="tgToken" placeholder="Telegram bot token (optional)" type="password"><button class="primary" onclick="saveTG()">Save Telegram token</button> <span id="tgSaved" class="muted"></span></div>
 </section>
 
 <section id="activity" class="hidden">
@@ -91,7 +84,7 @@ button.ghost{background:none;border:1px solid var(--line);color:var(--text);padd
 
 <section id="settings" class="hidden">
 <h2>Settings — API key</h2>
-<div class="card"><b>OpenRouter API key</b><br><span class="muted">Paste your free key once. It is saved in <b>this browser only</b> (localStorage) — never in the repo, never on the server. Every time you open this dashboard on this device it will already be there, you don't need to enter it again. To remove it, use Clear below or clear this site's data.</span><br>
+<div class="card"><b>🔑 OpenRouter API key</b><br><span class="muted">Paste your free key once. It is saved in <b>this browser only</b> — never in the repo, never on the server. Every time you open this dashboard on this device it will already be there. To remove it, use Clear below.</span><br>
 <input id="apiKey" type="password" placeholder="sk-or-v1-... — from openrouter.ai/keys">
 <select id="modelSel"><option value="openrouter/free">openrouter/free — auto free model</option><option value="google/gemma-4-31b-it:free">google/gemma-4-31b-it:free</option><option value="nvidia/nemotron-3-ultra-550b-a55b:free">nvidia/nemotron-3-ultra-550b-a55b:free</option><option value="openai/gpt-oss-120b:free">openai/gpt-oss-120b:free</option></select>
 <button class="primary" onclick="saveSettings()">Save API key</button> <button class="ghost" onclick="clearSettings()">Clear saved key</button> <span id="savedMsg" class="ok"></span>
@@ -116,7 +109,7 @@ function activeAgent(){return agents.find(a=>a.id===activeId)||agents[0]}
 function show(id,btn){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function go(id){const btn=[...document.querySelectorAll('aside button')].find(b=>b.getAttribute('onclick')?.includes("'"+id+"'"));show(id,btn)}
 function logAct(t){activity.unshift(new Date().toLocaleTimeString()+' — '+t);$('log').textContent=activity.slice(0,30).join('\n')}
-function renderAgents(){const a=activeAgent();$('agentTop').textContent='Agent: '+a.name;$('agentStat').textContent=agents.length;$('agentCount').textContent='('+agents.length+')';$('activeAgentLabel').textContent=a.name;$('activeAgentDesc').textContent=a.role+' — '+a.instr;$('chatAgent').textContent=a.name;$('agentList').innerHTML=agents.map(x=>`<div class="agent"><div><b>${x.name}</b> ${x.id===activeId?'· <span class=ok>● Active</span>':''}<br><span class=muted>${x.role} · ${x.model}</span><br><span class=muted>${x.instr}</span></div><div><button class="primary" onclick="setActive('${x.id}')">Use</button> <button class="ghost" onclick="openChat('${x.id}')">Chat</button> ${agents.length>1?`<button class="ghost" onclick="delAgent('${x.id}')">Delete</button>`:''}</div></div>`).join('')}
+function renderAgents(){const a=activeAgent();$('agentTop').textContent='Agent: '+a.name;$('agentStat').textContent=agents.length;$('agentCount').textContent='('+agents.length+')';$('activeAgentLabel').textContent=a.name;$('activeAgentDesc').textContent=a.role+' — '+a.instr;$('chatAgent').textContent=a.name;$('agentList').innerHTML=agents.map(x=>`<div class="agent"><div style="display:flex;gap:12px;align-items:center"><div class="avatar">${x.name[0].toUpperCase()}</div><div><b>${x.name}</b> ${x.id===activeId?'· <span class=ok>● Active</span>':''}<br><span class=muted>${x.role} · ${x.model}</span><br><span class=muted>${x.instr}</span></div></div><div><button class="primary" onclick="setActive('${x.id}')">Use</button> <button class="ghost" onclick="openChat('${x.id}')">Chat</button> ${agents.length>1?`<button class="ghost" onclick="delAgent('${x.id}')">Delete</button>`:''}</div></div>`).join('')}
 function setActive(id){activeId=id;saveAgents();renderAgents();logAct('Switched agent to '+activeAgent().name)}
 function openChat(id){setActive(id);go('webchat')}
 function delAgent(id){if(!confirm('Delete this agent?'))return;agents=agents.filter(a=>a.id!==id);if(activeId===id)activeId=agents[0].id;saveAgents();renderAgents()}
@@ -124,12 +117,9 @@ function createAgent(){const name=$('newName').value.trim(),role=$('newRole').va
 function saveSettings(){const k=$('apiKey').value.trim(),m=$('modelSel').value;if(k){ls.set('oc_api_key',k);$('savedMsg').textContent='Saved in this browser.'}ls.set('oc_model',m);refreshKeyUI();logAct('API settings saved locally (model '+m+')')}
 function clearSettings(){ls.del('oc_api_key');$('apiKey').value='';$('savedMsg').textContent='Saved key cleared.';refreshKeyUI()}
 function refreshKeyUI(){const k=ls.get('oc_api_key',''),m=ls.get('oc_model','openrouter/free');$('keyLabel').textContent=k?'Set · '+k.slice(0,7)+'…':'Not set';$('keyLabel').className=k?'ok':'warn';$('keyTop').textContent=k?'Key: set':'Key: not set';$('modelLabel').textContent=m;$('cfgModel').textContent=m;$('modelSel').value=m;if(k)$('apiKey').placeholder='Saved key •••'+k.slice(-4)+' — paste a new one to replace it'}
-function saveWA(){const v=$('waNumber').value.trim();if(!v)return;ls.set('oc_whatsapp',v);$('waSaved').textContent='Saved.';logAct('WhatsApp number saved: '+v)}
-function saveTG(){const v=$('tgToken').value.trim();if(!v)return;ls.set('oc_telegram',v);$('tgSaved').textContent='Saved in this browser.';logAct('Telegram token saved locally')}
 async function checkHealth(){try{const r=await fetch('/api/health');const d=await r.json();$('gw').textContent=d.ok?'● Online (serverless)':'Offline';logAct('Health check: hasKey(server)='+d.hasKey+', model='+d.model)}catch(e){$('gw').textContent='Offline';logAct('Health check failed')}}
 async function ask(){const q=$('q');const text=q.value.trim();if(!text)return;q.value='';const a=activeAgent();msgs.push({role:'user',content:text});const cl=$('chatlog');cl.textContent+='\n\nYou: '+text;logAct('Chat ('+a.name+'): '+text.slice(0,60));const key=ls.get('oc_api_key','');const model=a.model||ls.get('oc_model','openrouter/free');const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs,apiKey:key||undefined,model,system:a.instr})});const d=await r.json();if(!r.ok){cl.textContent+='\n\nError: '+(d.error||r.status);logAct('Chat error: '+(d.error||r.status));return}msgs.push({role:'assistant',content:d.reply});cl.textContent+='\n\n'+a.name+' ('+(d.model||model)+'): '+d.reply;$('sessionList').innerHTML='<b>webchat — '+a.name+'</b><br>'+msgs.length+' messages in this session';logAct('Reply from '+(d.model||model))}
 $('q').addEventListener('keydown',e=>{if(e.key==='Enter')ask()});
-$('waNumber').value=ls.get('oc_whatsapp','');
 renderAgents();refreshKeyUI();checkHealth();
 </script>
 </body></html>
