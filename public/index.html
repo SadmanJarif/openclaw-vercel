@@ -1,25 +1,81 @@
 <!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OpenClaw on Vercel — free with OpenRouter</title>
-<style>body{font-family:system-ui,sans-serif;max-width:680px;margin:40px auto;padding:0 16px;line-height:1.5} #log{border:1px solid #ddd;border-radius:8px;padding:12px;min-height:200px;white-space:pre-wrap} input,button{padding:10px;font-size:16px} input{width:70%} .muted{color:#666;font-size:14px}</style>
-</head><body>
-<h1>OpenClaw on Vercel</h1>
-<p class="muted">Free stack: Vercel Hobby + OpenRouter <code>:free</code> models. Limits: OpenRouter 20 req/min, 50 req/day with no credits. Vercel functions time out after 10s, so this is on-demand chat, not a 24/7 background agent.</p>
-<div id="log">Ask something below.</div><br>
-<input id="q" placeholder="Ask OpenClaw..."><button onclick="ask()">Send</button>
-<p id="status" class="muted"></p>
+<title>OpenClaw — Control UI</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
+.layout{display:flex;min-height:100vh}
+aside{width:210px;background:#020617;padding:20px 14px;flex-shrink:0}
+aside h1{font-size:18px;margin:0 0 4px} aside p{color:#94a3b8;font-size:12px;margin:0 0 20px}
+aside button{display:block;width:100%;text-align:left;background:none;border:0;color:#cbd5e1;padding:10px;border-radius:8px;font-size:15px;cursor:pointer}
+aside button.active{background:#1e293b;color:#fff}
+main{flex:1;padding:24px;max-width:900px}
+.card{background:#1e293b;border-radius:12px;padding:16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.grid .card{margin:0}
+.muted{color:#94a3b8;font-size:14px} .ok{color:#4ade80} .warn{color:#facc15}
+input,button{padding:10px;font-size:15px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e2e8f0}
+button.primary{background:#2563eb;border-color:#2563eb;color:#fff;cursor:pointer}
+#log{white-space:pre-wrap;background:#020617;border-radius:8px;padding:12px;min-height:120px;font-size:14px}
+.hidden{display:none}
+a{color:#60a5fa}
+code{background:#020617;padding:2px 6px;border-radius:6px}
+</style></head><body>
+<div class="layout">
+<aside>
+<h1>🦞 OpenClaw</h1><p>Control UI · Vercel</p>
+<button class="active" onclick="show('dashboard',this)">Dashboard</button>
+<button onclick="show('sessions',this)">Sessions</button>
+<button onclick="show('activity',this)">Activity</button>
+<button onclick="show('config',this)">Config</button>
+<button onclick="show('webchat',this)">WebChat</button>
+</aside>
+<main>
+<section id="dashboard">
+<h2>Dashboard</h2>
+<p class="muted">This is the web version — the Control UI. Gateway status, model, limits and config, like the real OpenClaw dashboard at <code>http://127.0.0.1:18789/</code> on a local gateway.</p>
+<div class="grid">
+<div class="card"><b>Gateway</b><br><span id="gw" class="warn">Checking…</span><br><span class="muted">Vercel serverless, not a 24/7 gateway</span></div>
+<div class="card"><b>Model</b><br><span id="model">openrouter/free</span><br><span class="muted">OpenRouter :free, $0/token</span></div>
+<div class="card"><b>API key</b><br><span id="key">Not set</span><br><span class="muted">Set OPENROUTER_API_KEY in Vercel</span></div>
+<div class="card"><b>Free limits</b><br>20 req/min · 50 req/day<br><span class="muted">1,000/day after a one-time $10 credit buy (optional)</span></div>
+</div>
+<div class="card"><b>Live site</b><br><a href="https://openclaw-vercel-sage.vercel.app">openclaw-vercel-sage.vercel.app</a><br><span class="muted">Repo: <a href="https://github.com/SadmanJarif/openclaw-vercel">github.com/SadmanJarif/openclaw-vercel</a> · Plan: Vercel Hobby, $0</span></div>
+<div class="card"><b>Why this isn't the full local dashboard</b><br><span class="muted">The real Control UI is served by the long-running Gateway and talks to it over WebSocket on port 18789. Vercel functions time out after 10s and are stateless, so this version gives you the same dashboard view with on-demand chat/webhook, not a gateway that stays awake.</span></div>
+</section>
+
+<section id="sessions" class="hidden">
+<h2>Sessions</h2>
+<div class="card"><b>webchat — current browser session</b><br><span class="muted">No persistent sessions on Vercel — functions are stateless, so sessions don't survive between requests. On a local gateway, your sessions, memory and channel connections live in ~/.openclaw/.</span></div>
+<div class="card" id="sessionList">No saved sessions yet. Send a message in WebChat and it will appear in Activity.</div>
+</section>
+
+<section id="activity" class="hidden">
+<h2>Activity</h2>
+<div class="card"><div id="log">Waiting for activity…</div></div>
+<button class="primary" onclick="checkHealth()">Refresh gateway status</button>
+</section>
+
+<section id="config" class="hidden">
+<h2>Config</h2>
+<div class="card"><b>Model provider — OpenRouter</b><br><code>baseUrl: https://openrouter.ai/api/v1</code><br><code>model: openrouter/free</code><br><code>apiKeyEnv: OPENROUTER_API_KEY</code></div>
+<div class="card"><b>To turn chat on</b><br>1. Create a free key at <a href="https://openrouter.ai/keys">openrouter.ai/keys</a> — no card needed.<br>2. Vercel → openclaw-vercel → Settings → Environment Variables → add <code>OPENROUTER_API_KEY</code>.<br>3. Redeploy. Then <code>/api/health</code> will show <code>hasKey: true</code>.</div>
+<div class="card"><b>Endpoints</b><br><code>GET /api/health</code> · <code>POST /api/chat</code> · <code>POST /api/webhook</code></div>
+</section>
+
+<section id="webchat" class="hidden">
+<h2>WebChat</h2>
+<p class="muted">Chat is just one panel here, not the whole app.</p>
+<div class="card"><div id="chatlog">Ask something below.</div><br>
+<input id="q" placeholder="Ask OpenClaw..." style="width:65%"><button class="primary" onclick="ask()">Send</button></div>
+</section>
+</main></div>
 <script>
-const log=document.getElementById('log'), q=document.getElementById('q'), status=document.getElementById('status');
-let msgs=[];
-async function ask(){
-  const text=q.value.trim(); if(!text) return; q.value='';
-  msgs.push({role:'user',content:text}); log.textContent+='\n\nYou: '+text; status.textContent='Thinking...';
-  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})});
-  const d=await r.json(); status.textContent='';
-  if(!r.ok){ log.textContent+='\n\nError: '+(d.error||r.status); return; }
-  msgs.push({role:'assistant',content:d.reply}); log.textContent+='\n\nOpenClaw ('+(d.model||'')+'): '+d.reply;
-}
-q.addEventListener('keydown',e=>{if(e.key==='Enter') ask()});
-fetch('/api/health').then(r=>r.json()).then(d=>{ status.textContent = d.hasKey ? 'Ready — key set, model: '+d.model : 'Not ready yet — set OPENROUTER_API_KEY in Vercel env vars.'; });
+let msgs=[], activity=[];
+function show(id,btn){ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+function logAct(t){ activity.unshift(new Date().toLocaleTimeString()+' — '+t); document.getElementById('log').textContent=activity.slice(0,20).join('\n'); }
+async function checkHealth(){ const r=await fetch('/api/health'); const d=await r.json(); document.getElementById('gw').textContent=d.ok?'Online (serverless)':'Offline'; document.getElementById('gw').className='ok'; document.getElementById('model').textContent=d.model||'openrouter/free'; document.getElementById('key').textContent=d.hasKey?'Set':'Not set'; document.getElementById('key').className=d.hasKey?'ok':'warn'; logAct('Health check: hasKey='+d.hasKey+', model='+d.model); }
+async function ask(){ const q=document.getElementById('q'); const text=q.value.trim(); if(!text) return; q.value=''; msgs.push({role:'user',content:text}); const cl=document.getElementById('chatlog'); cl.textContent+='\n\nYou: '+text; logAct('Chat: '+text.slice(0,60)); const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})}); const d=await r.json(); if(!r.ok){ cl.textContent+='\n\nError: '+(d.error||r.status); logAct('Chat error: '+(d.error||r.status)); return; } msgs.push({role:'assistant',content:d.reply}); cl.textContent+='\n\nOpenClaw ('+(d.model||'')+'): '+d.reply; document.getElementById('sessionList').innerHTML='<b>webchat — current browser session</b><br>'+msgs.length+' messages in this session'; logAct('Reply from '+(d.model||'')); }
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter') ask()});
+checkHealth();
 </script>
 </body></html>
