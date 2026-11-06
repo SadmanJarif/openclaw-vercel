@@ -1,0 +1,17 @@
+{
+  "gateway": { "mode": "local" },
+  "models": {
+    "providers": {
+      "openrouter": {
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "apiKeyEnv": "OPENROUTER_API_KEY"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": { "primary": "openrouter/openrouter/free" }
+    }
+  },
+  "channels": { "webchat": { "enabled": true } }
+}

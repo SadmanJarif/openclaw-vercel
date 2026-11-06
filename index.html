@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenClaw on Vercel — free with OpenRouter</title>
+<style>body{font-family:system-ui,sans-serif;max-width:680px;margin:40px auto;padding:0 16px;line-height:1.5} #log{border:1px solid #ddd;border-radius:8px;padding:12px;min-height:200px;white-space:pre-wrap} input,button{padding:10px;font-size:16px} input{width:70%} .muted{color:#666;font-size:14px}</style>
+</head><body>
+<h1>OpenClaw on Vercel</h1>
+<p class="muted">Free stack: Vercel Hobby + OpenRouter <code>:free</code> models. Limits: OpenRouter 20 req/min, 50 req/day with no credits. Vercel functions time out after 10s, so this is on-demand chat, not a 24/7 background agent.</p>
+<div id="log">Ask something below.</div><br>
+<input id="q" placeholder="Ask OpenClaw..."><button onclick="ask()">Send</button>
+<p id="status" class="muted"></p>
+<script>
+const log=document.getElementById('log'), q=document.getElementById('q'), status=document.getElementById('status');
+let msgs=[];
+async function ask(){
+  const text=q.value.trim(); if(!text) return; q.value='';
+  msgs.push({role:'user',content:text}); log.textContent+='\n\nYou: '+text; status.textContent='Thinking...';
+  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})});
+  const d=await r.json(); status.textContent='';
+  if(!r.ok){ log.textContent+='\n\nError: '+(d.error||r.status); return; }
+  msgs.push({role:'assistant',content:d.reply}); log.textContent+='\n\nOpenClaw ('+(d.model||'')+'): '+d.reply;
+}
+q.addEventListener('keydown',e=>{if(e.key==='Enter') ask()});
+fetch('/api/health').then(r=>r.json()).then(d=>{ status.textContent = d.hasKey ? 'Ready — key set, model: '+d.model : 'Not ready yet — set OPENROUTER_API_KEY in Vercel env vars.'; });
+</script>
+</body></html>

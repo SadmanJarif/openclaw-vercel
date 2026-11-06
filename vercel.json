@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/chat.js": { "maxDuration": 10 },
+    "api/webhook.js": { "maxDuration": 10 }
+  }
+}
