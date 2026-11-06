@@ -2,80 +2,134 @@
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>OpenClaw — Control UI</title>
 <style>
-body{font-family:system-ui,sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
-.layout{display:flex;min-height:100vh}
-aside{width:210px;background:#020617;padding:20px 14px;flex-shrink:0}
-aside h1{font-size:18px;margin:0 0 4px} aside p{color:#94a3b8;font-size:12px;margin:0 0 20px}
-aside button{display:block;width:100%;text-align:left;background:none;border:0;color:#cbd5e1;padding:10px;border-radius:8px;font-size:15px;cursor:pointer}
-aside button.active{background:#1e293b;color:#fff}
-main{flex:1;padding:24px;max-width:900px}
-.card{background:#1e293b;border-radius:12px;padding:16px;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+:root{--bg:#0b1220;--panel:#111c2e;--panel2:#16233a;--line:#233450;--text:#e6edf7;--muted:#93a4bd;--accent:#3b82f6;--green:#22c55e;--amber:#f59e0b}
+*{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:0;background:var(--bg);color:var(--text)}
+.top{height:52px;display:flex;align-items:center;gap:12px;padding:0 18px;background:#0a0f1c;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top b{font-size:16px} .pill{font-size:12px;padding:4px 10px;border-radius:999px;background:#12233d;border:1px solid var(--line);color:var(--muted)}
+.pill .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px}
+.layout{display:flex;min-height:calc(100vh - 52px)}
+aside{width:230px;background:#0a0f1c;border-right:1px solid var(--line);padding:16px 12px;flex-shrink:0}
+aside .sec{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 8px 6px}
+aside button{display:flex;width:100%;text-align:left;background:none;border:0;color:#cbd5e1;padding:9px 10px;border-radius:8px;font-size:15px;cursor:pointer}
+aside button:hover{background:var(--panel)} aside button.active{background:var(--panel2);color:#fff}
+aside button span{margin-left:auto;font-size:12px;color:var(--muted)}
+main{flex:1;padding:22px;max-width:960px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
 .grid .card{margin:0}
-.muted{color:#94a3b8;font-size:14px} .ok{color:#4ade80} .warn{color:#facc15}
-input,button{padding:10px;font-size:15px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e2e8f0}
-button.primary{background:#2563eb;border-color:#2563eb;color:#fff;cursor:pointer}
-#log{white-space:pre-wrap;background:#020617;border-radius:8px;padding:12px;min-height:120px;font-size:14px}
-.hidden{display:none}
-a{color:#60a5fa}
-code{background:#020617;padding:2px 6px;border-radius:6px}
+.muted{color:var(--muted);font-size:14px} .ok{color:var(--green)} .warn{color:var(--amber)}
+input,select,textarea{width:100%;padding:10px;font-size:15px;border-radius:8px;border:1px solid var(--line);background:#0b1220;color:var(--text);margin:6px 0}
+button.primary{background:var(--accent);border:1px solid var(--accent);color:#fff;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:15px}
+button.ghost{background:none;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer}
+.hidden{display:none} a{color:#60a5fa} code{background:#0a0f1c;padding:2px 6px;border-radius:6px}
+#log,#chatlog{white-space:pre-wrap;background:#0a0f1c;border-radius:8px;padding:12px;min-height:120px;font-size:14px}
+.agent{border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;display:flex;gap:12px;align-items:center;justify-content:space-between}
 </style></head><body>
+<div class="top"><b>🦞 OpenClaw</b><span class="pill"><span class="dot"></span><span id="gwTop">Gateway Online · serverless</span></span><span class="pill" id="agentTop">Agent: Main</span><span class="pill" id="keyTop">Key: not set</span><span style="margin-left:auto" class="muted">Vercel Hobby · $0 · <a href="https://github.com/SadmanJarif/openclaw-vercel">GitHub</a></span></div>
 <div class="layout">
 <aside>
-<h1>🦞 OpenClaw</h1><p>Control UI · Vercel</p>
-<button class="active" onclick="show('dashboard',this)">Dashboard</button>
-<button onclick="show('sessions',this)">Sessions</button>
-<button onclick="show('activity',this)">Activity</button>
-<button onclick="show('config',this)">Config</button>
-<button onclick="show('webchat',this)">WebChat</button>
+<div class="sec">Control UI</div>
+<button class="active" onclick="show('dashboard',this)">📊 Dashboard</button>
+<button onclick="show('agents',this)">🤖 Agents <span id="agentCount"></span></button>
+<button onclick="show('webchat',this)">💬 WebChat</button>
+<button onclick="show('sessions',this)">🗂️ Sessions</button>
+<button onclick="show('channels',this)">📱 Channels</button>
+<button onclick="show('activity',this)">⚡ Activity</button>
+<div class="sec">Settings</div>
+<button onclick="show('settings',this)">⚙️ Settings · API key</button>
+<button onclick="show('config',this)">🧩 Config</button>
 </aside>
 <main>
 <section id="dashboard">
-<h2>Dashboard</h2>
-<p class="muted">This is the web version — the Control UI. Gateway status, model, limits and config, like the real OpenClaw dashboard at <code>http://127.0.0.1:18789/</code> on a local gateway.</p>
+<h2 style="margin:4px 0">Dashboard</h2><p class="muted">Like the real Control UI — gateway status, agents, channels and activity in one place.</p>
 <div class="grid">
-<div class="card"><b>Gateway</b><br><span id="gw" class="warn">Checking…</span><br><span class="muted">Vercel serverless, not a 24/7 gateway</span></div>
-<div class="card"><b>Model</b><br><span id="model">openrouter/free</span><br><span class="muted">OpenRouter :free, $0/token</span></div>
-<div class="card"><b>API key</b><br><span id="key">Not set</span><br><span class="muted">Set OPENROUTER_API_KEY in Vercel</span></div>
-<div class="card"><b>Free limits</b><br>20 req/min · 50 req/day<br><span class="muted">1,000/day after a one-time $10 credit buy (optional)</span></div>
+<div class="card"><b>Gateway</b><br><span id="gw" class="ok">● Online (serverless)</span><br><span class="muted">Vercel functions · 10s timeout · stateless</span></div>
+<div class="card"><b>Model</b><br><span id="modelLabel">openrouter/free</span><br><span class="muted">OpenRouter :free · $0/token · 20/min · 50/day</span></div>
+<div class="card"><b>API key</b><br><span id="keyLabel" class="warn">Not set</span><br><span class="muted">Set it in Settings — saved in this browser only</span></div>
+<div class="card"><b>Agents</b><br><span id="agentStat">1</span><br><span class="muted">Create one in Agents — each has its own instructions</span></div>
 </div>
-<div class="card"><b>Live site</b><br><a href="https://openclaw-vercel-sage.vercel.app">openclaw-vercel-sage.vercel.app</a><br><span class="muted">Repo: <a href="https://github.com/SadmanJarif/openclaw-vercel">github.com/SadmanJarif/openclaw-vercel</a> · Plan: Vercel Hobby, $0</span></div>
-<div class="card"><b>Why this isn't the full local dashboard</b><br><span class="muted">The real Control UI is served by the long-running Gateway and talks to it over WebSocket on port 18789. Vercel functions time out after 10s and are stateless, so this version gives you the same dashboard view with on-demand chat/webhook, not a gateway that stays awake.</span></div>
+<div class="card"><b>Active agent</b> — <span id="activeAgentLabel">Main</span><br><span class="muted" id="activeAgentDesc">Your helpful personal assistant.</span><br><br><button class="primary" onclick="go('webchat')">Open chat →</button> <button class="ghost" onclick="go('agents')">Manage agents</button> <button class="ghost" onclick="go('channels')">Connect WhatsApp</button></div>
+<div class="card"><b>Channels</b><br>WebChat: <span class="ok">● Connected</span> &nbsp;·&nbsp; WhatsApp: <span class="warn">Not linked — needs local gateway QR</span> &nbsp;·&nbsp; Telegram: <span class="muted">Not set</span><br><span class="muted">See Channels for the WhatsApp steps.</span></div>
+</section>
+
+<section id="agents" class="hidden">
+<h2>Agents</h2><p class="muted">An agent is one persona: its own instructions, model and chats. Like the real UI at <code>/agents</code>, with Manage agents in Settings.</p>
+<div id="agentList"></div>
+<div class="card"><b>Create a new agent</b>
+<input id="newName" placeholder="Agent name — e.g. Sales Helper, Study Coach">
+<input id="newRole" placeholder="Role — e.g. Helps with sales outreach">
+<textarea id="newInstr" rows="3" placeholder="Instructions — what should this agent do? Be specific."></textarea>
+<select id="newModel"><option value="openrouter/free">openrouter/free — auto free model</option><option value="google/gemma-4-31b-it:free">google/gemma-4-31b-it:free</option><option value="nvidia/nemotron-3-ultra-550b-a55b:free">nvidia/nemotron-3-ultra-550b-a55b:free</option><option value="openai/gpt-oss-120b:free">openai/gpt-oss-120b:free</option></select>
+<button class="primary" onclick="createAgent()">Create agent</button></div>
+</section>
+
+<section id="webchat" class="hidden">
+<h2>WebChat — <span id="chatAgent">Main</span></h2>
+<div class="card"><div id="chatlog">Ask your active agent something below. It uses that agent's instructions and model.</div><br>
+<input id="q" placeholder="Message your agent..." style="width:68%"><button class="primary" onclick="ask()">Send</button></div>
 </section>
 
 <section id="sessions" class="hidden">
 <h2>Sessions</h2>
-<div class="card"><b>webchat — current browser session</b><br><span class="muted">No persistent sessions on Vercel — functions are stateless, so sessions don't survive between requests. On a local gateway, your sessions, memory and channel connections live in ~/.openclaw/.</span></div>
-<div class="card" id="sessionList">No saved sessions yet. Send a message in WebChat and it will appear in Activity.</div>
+<div class="card"><b>webchat — current browser session</b><br><span class="muted">Vercel is stateless, so sessions don't persist on the server. On a local gateway they live in <code>~/.openclaw/</code> with full history. Here, your chats and agents are saved in this browser (localStorage).</span></div>
+<div class="card" id="sessionList">No messages yet in this session.</div>
+</section>
+
+<section id="channels" class="hidden">
+<h2>Channels</h2>
+<div class="card"><b>💬 WebChat</b> — <span class="ok">● Connected</span><br><span class="muted">Built into this Control UI. Works now, once your API key is set.</span></div>
+<div class="card"><b>📱 WhatsApp</b> — <span class="warn">Not linked on Vercel</span><br><span class="muted">Real OpenClaw links WhatsApp with a QR code: <code>openclaw channels login --channel whatsapp</code>, then on your phone WhatsApp → Settings → Linked Devices → Link a Device and scan it. WhatsApp uses Baileys (WhatsApp Web), not the official API, and it needs the long-running Gateway — Vercel serverless can't hold that QR session, so the full link has to happen on a local gateway / VPS. Save your number below and it will be kept for that setup.</span><br><br>
+<input id="waNumber" placeholder="+8801XXXXXXXXX — your WhatsApp number"><button class="primary" onclick="saveWA()">Save WhatsApp number</button> <span id="waSaved" class="muted"></span><br><br>
+<span class="muted">Tip: use a second / assistant number if you can — linking your personal WhatsApp makes every message to you become agent input.</span></div>
+<div class="card"><b>✈️ Telegram</b> — <span class="muted">Not set</span><br><span class="muted">Needs only a bot token from @BotFather. Save it here and it stays in this browser.</span><br><input id="tgToken" placeholder="Telegram bot token (optional)" type="password"><button class="primary" onclick="saveTG()">Save Telegram token</button> <span id="tgSaved" class="muted"></span></div>
 </section>
 
 <section id="activity" class="hidden">
-<h2>Activity</h2>
-<div class="card"><div id="log">Waiting for activity…</div></div>
+<h2>Activity</h2><div class="card"><div id="log">No activity yet.</div></div>
 <button class="primary" onclick="checkHealth()">Refresh gateway status</button>
+</section>
+
+<section id="settings" class="hidden">
+<h2>Settings — API key</h2>
+<div class="card"><b>OpenRouter API key</b><br><span class="muted">Paste your free key once. It is saved in <b>this browser only</b> (localStorage) — never in the repo, never on the server. Every time you open this dashboard on this device it will already be there, you don't need to enter it again. To remove it, use Clear below or clear this site's data.</span><br>
+<input id="apiKey" type="password" placeholder="sk-or-v1-... — from openrouter.ai/keys">
+<select id="modelSel"><option value="openrouter/free">openrouter/free — auto free model</option><option value="google/gemma-4-31b-it:free">google/gemma-4-31b-it:free</option><option value="nvidia/nemotron-3-ultra-550b-a55b:free">nvidia/nemotron-3-ultra-550b-a55b:free</option><option value="openai/gpt-oss-120b:free">openai/gpt-oss-120b:free</option></select>
+<button class="primary" onclick="saveSettings()">Save API key</button> <button class="ghost" onclick="clearSettings()">Clear saved key</button> <span id="savedMsg" class="ok"></span>
+<p class="muted">Get a free key: <a href="https://openrouter.ai/keys">openrouter.ai/keys</a> — sign up with GitHub/email, no card. Free models: 20 req/min, 50 req/day.</p></div>
+<div class="card"><b>Or set it in Vercel (all devices)</b><br><span class="muted">Vercel → openclaw-vercel → Settings → Environment Variables → <code>OPENROUTER_API_KEY</code>, then redeploy. The browser key above takes priority for chats from this browser.</span></div>
 </section>
 
 <section id="config" class="hidden">
 <h2>Config</h2>
-<div class="card"><b>Model provider — OpenRouter</b><br><code>baseUrl: https://openrouter.ai/api/v1</code><br><code>model: openrouter/free</code><br><code>apiKeyEnv: OPENROUTER_API_KEY</code></div>
-<div class="card"><b>To turn chat on</b><br>1. Create a free key at <a href="https://openrouter.ai/keys">openrouter.ai/keys</a> — no card needed.<br>2. Vercel → openclaw-vercel → Settings → Environment Variables → add <code>OPENROUTER_API_KEY</code>.<br>3. Redeploy. Then <code>/api/health</code> will show <code>hasKey: true</code>.</div>
+<div class="card"><b>Model provider — OpenRouter</b><br><code>baseUrl: https://openrouter.ai/api/v1</code><br><code>model: <span id="cfgModel">openrouter/free</span></code><br><code>apiKeyEnv: OPENROUTER_API_KEY</code><br><code>gateway: serverless on Vercel Hobby</code></div>
 <div class="card"><b>Endpoints</b><br><code>GET /api/health</code> · <code>POST /api/chat</code> · <code>POST /api/webhook</code></div>
-</section>
-
-<section id="webchat" class="hidden">
-<h2>WebChat</h2>
-<p class="muted">Chat is just one panel here, not the whole app.</p>
-<div class="card"><div id="chatlog">Ask something below.</div><br>
-<input id="q" placeholder="Ask OpenClaw..." style="width:65%"><button class="primary" onclick="ask()">Send</button></div>
 </section>
 </main></div>
 <script>
+const $=id=>document.getElementById(id);
+const ls={get:(k,d)=>{try{return localStorage.getItem(k)??d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+let agents=JSON.parse(ls.get('oc_agents','null')||'null')||[{id:'main',name:'Main',role:'Personal assistant',instr:'You are OpenClaw, a helpful personal AI agent. Be concise and practical.',model:'openrouter/free'}];
+let activeId=ls.get('oc_active_agent','main');
 let msgs=[], activity=[];
-function show(id,btn){ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-function logAct(t){ activity.unshift(new Date().toLocaleTimeString()+' — '+t); document.getElementById('log').textContent=activity.slice(0,20).join('\n'); }
-async function checkHealth(){ const r=await fetch('/api/health'); const d=await r.json(); document.getElementById('gw').textContent=d.ok?'Online (serverless)':'Offline'; document.getElementById('gw').className='ok'; document.getElementById('model').textContent=d.model||'openrouter/free'; document.getElementById('key').textContent=d.hasKey?'Set':'Not set'; document.getElementById('key').className=d.hasKey?'ok':'warn'; logAct('Health check: hasKey='+d.hasKey+', model='+d.model); }
-async function ask(){ const q=document.getElementById('q'); const text=q.value.trim(); if(!text) return; q.value=''; msgs.push({role:'user',content:text}); const cl=document.getElementById('chatlog'); cl.textContent+='\n\nYou: '+text; logAct('Chat: '+text.slice(0,60)); const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})}); const d=await r.json(); if(!r.ok){ cl.textContent+='\n\nError: '+(d.error||r.status); logAct('Chat error: '+(d.error||r.status)); return; } msgs.push({role:'assistant',content:d.reply}); cl.textContent+='\n\nOpenClaw ('+(d.model||'')+'): '+d.reply; document.getElementById('sessionList').innerHTML='<b>webchat — current browser session</b><br>'+msgs.length+' messages in this session'; logAct('Reply from '+(d.model||'')); }
-document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter') ask()});
-checkHealth();
+function saveAgents(){ls.set('oc_agents',JSON.stringify(agents));ls.set('oc_active_agent',activeId)}
+function activeAgent(){return agents.find(a=>a.id===activeId)||agents[0]}
+function show(id,btn){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
+function go(id){const btn=[...document.querySelectorAll('aside button')].find(b=>b.getAttribute('onclick')?.includes("'"+id+"'"));show(id,btn)}
+function logAct(t){activity.unshift(new Date().toLocaleTimeString()+' — '+t);$('log').textContent=activity.slice(0,30).join('\n')}
+function renderAgents(){const a=activeAgent();$('agentTop').textContent='Agent: '+a.name;$('agentStat').textContent=agents.length;$('agentCount').textContent='('+agents.length+')';$('activeAgentLabel').textContent=a.name;$('activeAgentDesc').textContent=a.role+' — '+a.instr;$('chatAgent').textContent=a.name;$('agentList').innerHTML=agents.map(x=>`<div class="agent"><div><b>${x.name}</b> ${x.id===activeId?'· <span class=ok>● Active</span>':''}<br><span class=muted>${x.role} · ${x.model}</span><br><span class=muted>${x.instr}</span></div><div><button class="primary" onclick="setActive('${x.id}')">Use</button> <button class="ghost" onclick="openChat('${x.id}')">Chat</button> ${agents.length>1?`<button class="ghost" onclick="delAgent('${x.id}')">Delete</button>`:''}</div></div>`).join('')}
+function setActive(id){activeId=id;saveAgents();renderAgents();logAct('Switched agent to '+activeAgent().name)}
+function openChat(id){setActive(id);go('webchat')}
+function delAgent(id){if(!confirm('Delete this agent?'))return;agents=agents.filter(a=>a.id!==id);if(activeId===id)activeId=agents[0].id;saveAgents();renderAgents()}
+function createAgent(){const name=$('newName').value.trim(),role=$('newRole').value.trim()||'Custom agent',instr=$('newInstr').value.trim()||'You are a helpful AI agent.',model=$('newModel').value;if(!name){alert('Give the agent a name first.');return}agents.push({id:'a'+Date.now(),name,role,instr,model});activeId=agents[agents.length-1].id;saveAgents();renderAgents();$('newName').value='';$('newRole').value='';$('newInstr').value='';logAct('Created agent '+name);alert('Agent "'+name+'" created and set active.')}
+function saveSettings(){const k=$('apiKey').value.trim(),m=$('modelSel').value;if(k){ls.set('oc_api_key',k);$('savedMsg').textContent='Saved in this browser.'}ls.set('oc_model',m);refreshKeyUI();logAct('API settings saved locally (model '+m+')')}
+function clearSettings(){ls.del('oc_api_key');$('apiKey').value='';$('savedMsg').textContent='Saved key cleared.';refreshKeyUI()}
+function refreshKeyUI(){const k=ls.get('oc_api_key',''),m=ls.get('oc_model','openrouter/free');$('keyLabel').textContent=k?'Set · '+k.slice(0,7)+'…':'Not set';$('keyLabel').className=k?'ok':'warn';$('keyTop').textContent=k?'Key: set':'Key: not set';$('modelLabel').textContent=m;$('cfgModel').textContent=m;$('modelSel').value=m;if(k)$('apiKey').placeholder='Saved key •••'+k.slice(-4)+' — paste a new one to replace it'}
+function saveWA(){const v=$('waNumber').value.trim();if(!v)return;ls.set('oc_whatsapp',v);$('waSaved').textContent='Saved.';logAct('WhatsApp number saved: '+v)}
+function saveTG(){const v=$('tgToken').value.trim();if(!v)return;ls.set('oc_telegram',v);$('tgSaved').textContent='Saved in this browser.';logAct('Telegram token saved locally')}
+async function checkHealth(){try{const r=await fetch('/api/health');const d=await r.json();$('gw').textContent=d.ok?'● Online (serverless)':'Offline';logAct('Health check: hasKey(server)='+d.hasKey+', model='+d.model)}catch(e){$('gw').textContent='Offline';logAct('Health check failed')}}
+async function ask(){const q=$('q');const text=q.value.trim();if(!text)return;q.value='';const a=activeAgent();msgs.push({role:'user',content:text});const cl=$('chatlog');cl.textContent+='\n\nYou: '+text;logAct('Chat ('+a.name+'): '+text.slice(0,60));const key=ls.get('oc_api_key','');const model=a.model||ls.get('oc_model','openrouter/free');const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs,apiKey:key||undefined,model,system:a.instr})});const d=await r.json();if(!r.ok){cl.textContent+='\n\nError: '+(d.error||r.status);logAct('Chat error: '+(d.error||r.status));return}msgs.push({role:'assistant',content:d.reply});cl.textContent+='\n\n'+a.name+' ('+(d.model||model)+'): '+d.reply;$('sessionList').innerHTML='<b>webchat — '+a.name+'</b><br>'+msgs.length+' messages in this session';logAct('Reply from '+(d.model||model))}
+$('q').addEventListener('keydown',e=>{if(e.key==='Enter')ask()});
+$('waNumber').value=ls.get('oc_whatsapp','');
+renderAgents();refreshKeyUI();checkHealth();
 </script>
 </body></html>
